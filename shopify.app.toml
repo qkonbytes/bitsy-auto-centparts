@@ -2,7 +2,7 @@
 # Fitment comes live from TecDoc through Supabase; nothing about fitment is stored in Shopify.
 # https://shopify.dev/docs/apps/build/cli-for-apps/app-configuration
 
-client_id = "REPLACE_WITH_BITSY_AUTO_CLIENT_ID"
+client_id = "31def3a8ffaea17e1a4107333b10087a"
 name = "Bitsy Auto"
 # No server of our own: Shopify hosts the admin screens (extensions/admin-home).
 application_url = "https://shopify.dev/apps/default-app-home"
