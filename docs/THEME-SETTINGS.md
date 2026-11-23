@@ -1,0 +1,121 @@
+# Bitsy Auto – theme editor settings (build spec)
+
+Every storefront piece gets the **shared groups** (A–H) plus its **own settings**. Settings that only apply in one mode are hidden until that mode is chosen (`visible_if`), so the editor stays readable.
+
+Admin-app settings (VIN limit, results page, enabled filters, garage size, save VIN) live in the app's Settings screen and are read by every block through `app.metafields`. They are not repeated in the theme editor.
+
+## Pieces
+
+| Piece | Type | Where it goes |
+|---|---|---|
+| Vehicle nav bar + My Garage popup | App embed (`target: body`) | Theme settings › App embeds, every page |
+| Vehicle selector | App block | Any section that accepts app blocks |
+| Hero banner | App section (`target: section`) | Any template, typically the homepage |
+| Collection vehicle bar | App section | Collection template, once, for all collections |
+| Results | App section | The results page (`/pages/parts-for-your-vehicle`) |
+
+## Shared groups
+
+### A. Layout
+- Full width (on/off); content max width (600–1600 px)
+- Padding top / bottom – desktop (0–160 px) and mobile (0–120 px)
+- Padding left / right – desktop and mobile
+- Margin top / bottom
+- Content alignment: left / centre / right
+- Gap between elements (0–40 px)
+
+### B. Typography
+- Heading font, body font (Shopify font picker, includes weight and style)
+- Heading size – desktop and mobile; body size; label size; button size
+- Letter spacing; line height
+- Text case for headings, labels and buttons: as typed / UPPERCASE / Capitalised
+
+### C. Colours
+- Background (solid or gradient), heading, text, labels, links
+- Dropdown: background, text, placeholder, border, disabled background, disabled text
+- Focus ring
+- Primary button: background, text, border, hover background, hover text
+- Secondary button: same five
+- Garage icon, badge background, badge text
+- Success (fits) and error message colours
+
+### D. Dropdowns
+- Layout: one row / 2 × 2 grid / stacked
+- Labels: above / hidden (placeholder only)
+- Label texts and placeholder texts for Make, Model, Year, Engine
+- Height (32–64 px), corner radius (0–32 px), border width (0–4 px), inner padding
+- Move to the next dropdown automatically (on/off)
+- Pre-fill from the shopper's selected garage vehicle (on/off)
+
+### E. Buttons
+- Text ("Find parts"); show arrow/search icon
+- Height, corner radius, border width, horizontal padding
+- Width: auto / full width (desktop and mobile separately)
+- Font weight
+
+### F. VIN and garage
+- Show VIN search (on/off); VIN link text; VIN placeholder; "VIN search paused" message (shown when the monthly limit is reached)
+- Show garage icon (on/off); garage label text or icon only; show count badge (on/off); icon size
+
+### G. Visibility
+- Show on desktop / show on mobile
+- Hide on these page types (checkbox list) – app embed only
+
+### H. Advanced
+- Extra CSS class
+- Custom CSS (applies inside this block only)
+
+## Own settings per piece
+
+### Vehicle nav bar (app embed) – A–H plus
+- Position: below the theme header / above the theme header
+- Stick to top when scrolling (on/off); shadow when stuck
+- Heading text ("Find parts for your vehicle"); show heading on mobile
+- Mobile style: full bar / collapsed "Select vehicle" button that opens the dropdowns; collapsed button text
+- Border bottom: width and colour
+
+### My Garage popup (inside the nav bar embed) – C, B, H plus
+- Title text; empty-garage message; "Add a vehicle" text; "Shop parts for selected vehicle" text; "Garage full" message
+- Popup width (360–720 px); corner radius; overlay colour and opacity
+- Open from: icon click only / also after a vehicle is chosen for the first time
+- Show the TecDoc KType line (on/off); show "VIN saved" line (on/off)
+
+### Vehicle selector (app block) – A–F, H plus
+- Heading and subheading text
+- Box style: none / card / outlined; card background, border, radius, shadow, padding
+
+### Hero banner (app section) – A–H plus
+- Desktop image; mobile image; image position (focal point from the image picker)
+- Overlay colour and opacity (0–90 %)
+- Height: small / medium / large / full screen / custom px – desktop and mobile separately
+- Content position: horizontal (left/centre/right) and vertical (top/middle/bottom)
+- Content width (400–1200 px)
+- Heading, subheading (rich text); heading and subheading colours
+- Panel style: white card / glass (blurred) / none; panel colour, opacity, padding, radius, shadow
+- Optional secondary link: text and URL
+
+### Collection vehicle bar (app section) – A–H plus
+- Heading text ("Shop this collection by vehicle")
+- Fits message template ("Showing parts that fit {vehicle}"), count text ("{fit} of {total} products")
+- "Change vehicle" and "Clear vehicle" texts
+- Stick to top when scrolling (on/off)
+- Box style: none / card / outlined, with colours, radius and padding
+
+### Results (app section) – A–H plus
+- Show vehicle bar at the top (on/off); its heading text
+- Page heading text; count text ("{count} parts fit")
+- Columns: default on desktop (2–5), mobile (1–2); let shoppers change columns (on/off)
+- Products per page default (12/24/36/48); let shoppers change it (on/off)
+- Pagination: numbered / "Load more" button / infinite scroll; button text
+- Sort: show sort (on/off); default sort
+- Filters: layout sidebar / drawer; sidebar position left/right; open groups by default; show product count per value; filter heading text; "Clear all" text
+- Product card: image ratio (square / portrait / landscape / natural), image fit (cover/contain), image background, show second image on hover, show brand, SKU, stock status, "Fits your vehicle" label, add to cart; card padding, border, radius, shadow, text alignment
+- Use theme card styles when available (on/off) – reuses the theme's own card markup and CSS
+- No-results message (rich text) and contact link
+
+## Shopify limits to stay within
+- Max 30 blocks per extension (we use 5)
+- 100 KB of Liquid across the extension: schema labels go in locale files (`t:` keys), shared markup in snippets
+- Locale file max 15 KB each
+- JS and CSS referenced by a schema: keep under ~10 KB / 100 KB compressed; one shared `bitsy.js`, loaded once by whichever block renders first
+- App blocks can't render on checkout pages
