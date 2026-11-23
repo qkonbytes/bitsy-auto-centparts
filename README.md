@@ -10,9 +10,10 @@ Shopify app that lets shoppers find their vehicle (Make → Model → Year → E
 |---|---|
 | `shopify.app.toml` | App configuration: scopes, App Proxy `/apps/bitsy` → Supabase `storefront` |
 | `extensions/admin-home` | The app's screens in the Shopify admin (Home, Settings, Help), a Shopify-hosted App Home UI extension (Preact + Polaris web components) |
-| `extensions/bitsy-auto-theme` | Theme app extension: nav bar + My Garage (app embed), selector block, hero, collection bar, results *(next)* |
+| `extensions/bitsy-auto-theme` | Theme app extension: nav bar + My Garage (app embed), vehicle selector, hero, collection bar, results |
 | `docs/INTERFACE-CONTRACT.md` | Endpoints between this app and Supabase |
 | `docs/THEME-SETTINGS.md` | Every theme editor setting per section |
+| `scripts/build-theme-blocks.py` | Generates the theme blocks' settings; run it after editing |
 
 There is no server to host. The admin screens are hosted by Shopify; all data calls go to Supabase.
 

@@ -1,0 +1,160 @@
+/* Bitsy Auto – storefront styles. Every value comes from a CSS variable set per block
+   by snippets/bitsy-style.liquid, so the theme editor settings control the look. */
+.bitsy{box-sizing:border-box;color:var(--b-text,inherit);font-family:var(--b-body-font,inherit);font-size:var(--b-body-size,inherit);line-height:var(--b-line,1.5);background:var(--b-bg-gradient,var(--b-bg,transparent));margin:var(--b-mt,0) 0 var(--b-mb,0);padding:var(--b-pt,0) var(--b-px,0) var(--b-pb,0)}
+.bitsy *,.bitsy *::before,.bitsy *::after{box-sizing:border-box}
+.bitsy[hidden],.bitsy [hidden]{display:none!important}
+.bitsy__inner{max-width:var(--b-max,1200px);margin:0 auto;display:flex;flex-direction:column;gap:var(--b-gap,10px);text-align:var(--b-align,left)}
+.bitsy--full .bitsy__inner{max-width:none}
+.bitsy__heading{margin:0;font-family:var(--b-heading-font,inherit);font-weight:var(--b-heading-weight,700);font-style:var(--b-heading-style,normal);font-size:var(--b-heading-size,22px);color:var(--b-heading,inherit);letter-spacing:var(--b-ls,0);text-transform:var(--b-heading-case,none);line-height:1.2}
+.bitsy__sub{margin:0;color:var(--b-text,inherit)}
+.bitsy a{color:var(--b-link,inherit)}
+.bitsy__label{font-size:var(--b-label-size,12px);color:var(--b-label,inherit);text-transform:var(--b-label-case,none);font-weight:600}
+.bitsy-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Vehicle form */
+.bitsy-ymm{display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--b-gap,10px);justify-content:var(--b-justify,flex-start)}
+.bitsy-ymm__fields{display:flex;flex-wrap:wrap;gap:var(--b-gap,10px);flex:1 1 520px;min-width:0}
+.bitsy-ymm--grid .bitsy-ymm__fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.bitsy-ymm--stacked .bitsy-ymm__fields{flex-direction:column}
+.bitsy-ymm--stacked{flex-direction:column;align-items:stretch}
+.bitsy-field{display:flex;flex-direction:column;gap:4px;flex:1 1 120px;min-width:0;text-align:left}
+.bitsy-field--engine{flex-grow:1.6}
+.bitsy-select,.bitsy-input{width:100%;height:var(--b-sel-h,44px);padding:0 var(--b-sel-pad,12px);border:var(--b-sel-bw,1px) solid var(--b-sel-border,#bdbdbd);border-radius:var(--b-sel-r,6px);background-color:var(--b-sel-bg,#fff);color:var(--b-sel-text,#1a1a1a);font:inherit;font-size:var(--b-body-size,inherit)}
+.bitsy-select:disabled,.bitsy-input:disabled{background-color:var(--b-sel-dis-bg,#f2f2f2);color:var(--b-sel-dis-text,#767676);cursor:not-allowed}
+.bitsy-select:focus-visible,.bitsy-input:focus-visible,.bitsy-btn:focus-visible,.bitsy-garage-btn:focus-visible,.bitsy-link:focus-visible{outline:2px solid var(--b-focus,#005bd3);outline-offset:2px}
+.bitsy-input--vin{text-transform:uppercase;letter-spacing:.06em}
+.bitsy-ymm__actions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--b-gap,10px)}
+
+/* Buttons */
+.bitsy-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--b-btn-h,44px);padding:0 var(--b-btn-pad,18px);border:var(--b-btn-bw,0) solid var(--b-btn-border,transparent);border-radius:var(--b-btn-r,6px);background:var(--b-btn-bg,#1f2a44);color:var(--b-btn-text,#fff);font:inherit;font-size:var(--b-btn-size,inherit);font-weight:var(--b-btn-weight,700);text-transform:var(--b-btn-case,none);cursor:pointer;text-decoration:none;white-space:nowrap}
+.bitsy-btn:hover{background:var(--b-btn-hover-bg,var(--b-btn-bg,#1f2a44));color:var(--b-btn-hover-text,var(--b-btn-text,#fff))}
+.bitsy-btn[disabled]{opacity:.55;cursor:not-allowed}
+.bitsy-btn--secondary{background:var(--b-btn2-bg,transparent);color:var(--b-btn2-text,inherit);border:var(--b-btn-bw2,1px) solid var(--b-btn2-border,currentColor)}
+.bitsy-btn--secondary:hover{background:var(--b-btn2-hover-bg,var(--b-btn2-bg,transparent));color:var(--b-btn2-hover-text,var(--b-btn2-text,inherit))}
+.bitsy-btn--full{width:100%}
+.bitsy-link{background:none;border:0;padding:0;font:inherit;color:var(--b-link,inherit);text-decoration:underline;cursor:pointer}
+.bitsy-btn svg,.bitsy-garage-btn svg{flex:0 0 auto}
+
+/* Garage button */
+.bitsy-garage-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:var(--b-btn-h,44px);height:var(--b-btn-h,44px);padding:0 10px;border:1px solid var(--b-btn2-border,currentColor);border-radius:var(--b-btn-r,6px);background:var(--b-btn2-bg,transparent);color:var(--b-garage,currentColor);font:inherit;font-weight:600;cursor:pointer}
+.bitsy-garage-btn svg{width:var(--b-icon,22px);height:var(--b-icon,22px)}
+.bitsy-badge{position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:var(--b-badge-bg,#f2b705);color:var(--b-badge-text,#1a1a1a);font-size:11px;font-weight:800;line-height:19px;text-align:center}
+.bitsy-msg{margin:0;font-size:.92em}
+.bitsy-msg--error{color:var(--b-error,#b3261e)}
+.bitsy-msg--ok{color:var(--b-success,#1e6b3a)}
+
+/* Nav bar (app embed) */
+.bitsy-bar{position:relative;z-index:40;border-bottom:var(--b-border-w,0) solid var(--b-border-c,transparent)}
+.bitsy-bar--sticky{position:sticky;top:0}
+.bitsy-bar--stuck{box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.bitsy-bar .bitsy-ymm{flex-wrap:wrap}
+.bitsy-bar__title{flex:0 0 auto;font-family:var(--b-heading-font,inherit);font-weight:var(--b-heading-weight,700);font-size:var(--b-heading-size,16px);color:var(--b-heading,inherit);text-transform:var(--b-heading-case,none);margin-right:6px}
+.bitsy-bar__toggle{display:none}
+.bitsy-active{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.bitsy-active__name{font-weight:700}
+
+/* Garage modal */
+.bitsy-modal{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px;background:var(--b-overlay,rgba(0,0,0,.5));overflow-y:auto}
+.bitsy-modal__dialog{width:100%;max-width:var(--b-modal-w,520px);background:var(--b-modal-bg,#fff);color:var(--b-modal-text,#1a1a1a);border-radius:var(--b-modal-r,12px);box-shadow:0 24px 48px rgba(0,0,0,.25);overflow:hidden;font-family:var(--b-body-font,inherit)}
+.bitsy-modal__head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(0,0,0,.1)}
+.bitsy-modal__title{margin:0;font-size:18px;font-weight:700;font-family:var(--b-heading-font,inherit)}
+.bitsy-modal__close{width:40px;height:40px;border:0;background:transparent;border-radius:20px;cursor:pointer;color:inherit;display:flex;align-items:center;justify-content:center}
+.bitsy-modal__list{list-style:none;margin:0;padding:8px 12px;display:flex;flex-direction:column;gap:6px}
+.bitsy-car{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid rgba(0,0,0,.12);border-radius:10px}
+.bitsy-car--active{border:2px solid var(--b-btn-bg,#1f2a44);background:rgba(0,0,0,.03)}
+.bitsy-car__pick{flex:1 1 auto;min-width:0;text-align:left;background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.bitsy-car__title{font-weight:700}
+.bitsy-car__meta{font-size:.88em;opacity:.75}
+.bitsy-car__tag{flex:0 0 auto;padding:2px 8px;border-radius:999px;background:var(--b-btn-bg,#1f2a44);color:var(--b-btn-text,#fff);font-size:12px;font-weight:600}
+.bitsy-car__remove{flex:0 0 auto;width:40px;height:40px;border:0;border-radius:20px;background:transparent;color:inherit;opacity:.7;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.bitsy-modal__body{padding:12px 20px 20px;border-top:1px solid rgba(0,0,0,.1);display:flex;flex-direction:column;gap:12px}
+.bitsy-modal__empty{margin:0;padding:8px 20px 16px;opacity:.8}
+.bitsy-tabs{display:flex;gap:4px;padding:4px;border-radius:8px;background:rgba(0,0,0,.06)}
+.bitsy-tab{flex:1 1 0;height:36px;border:0;border-radius:6px;background:transparent;font:inherit;font-weight:600;cursor:pointer;color:inherit}
+.bitsy-tab[aria-selected="true"]{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+/* Hero */
+.bitsy-hero{position:relative;display:flex;align-items:var(--b-valign,center);min-height:var(--b-hero-h,560px);overflow:hidden;background:var(--b-bg-gradient,var(--b-bg,#39434f))}
+.bitsy-hero__media,.bitsy-hero__overlay{position:absolute;inset:0}
+.bitsy-hero__media img{width:100%;height:100%;object-fit:cover}
+.bitsy-hero__media--mobile{display:none}
+.bitsy-hero__overlay{background:var(--b-overlay-c,#000);opacity:var(--b-overlay-o,.45)}
+.bitsy-hero .bitsy__inner{position:relative;width:100%;align-items:var(--b-halign,flex-start)}
+.bitsy-hero__content{width:100%;max-width:var(--b-content-w,760px);display:flex;flex-direction:column;gap:var(--b-gap,16px);text-align:var(--b-align,left)}
+.bitsy-hero__panel{background:var(--b-panel-bg,#fff);color:var(--b-panel-text,#1a1a1a);border-radius:var(--b-panel-r,12px);padding:var(--b-panel-pad,18px);box-shadow:var(--b-panel-shadow,none);display:flex;flex-direction:column;gap:var(--b-gap,10px);text-align:left}
+.bitsy-hero__panel--glass{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.bitsy-hero__panel--none{background:transparent;padding:0;box-shadow:none}
+.bitsy-hero__panel .bitsy-ymm--grid .bitsy-ymm__fields,.bitsy-hero__panel .bitsy-ymm--row .bitsy-ymm__fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+
+/* Boxes (selector, collection bar) */
+.bitsy-box{border-radius:var(--b-box-r,10px);padding:var(--b-box-pad,0)}
+.bitsy-box{color:var(--b-box-text,inherit)}
+.bitsy-box .bitsy__label,.bitsy-box .bitsy__heading,.bitsy-box .bitsy-link,.bitsy-box .bitsy-garage-btn{color:var(--b-box-text,inherit)}
+.bitsy-box--card{background:var(--b-box-bg,#f6f7f9);box-shadow:var(--b-box-shadow,none);padding:var(--b-box-pad,16px)}
+.bitsy-box--outlined{border:1px solid var(--b-box-border,#dadde3);padding:var(--b-box-pad,16px)}
+.bitsy-coll__state{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.bitsy-coll__fits{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--b-success,#1e6b3a)}
+.bitsy-coll__count{opacity:.8}
+.bitsy-spacer{flex:1 1 auto}
+
+/* Results */
+.bitsy-results__layout{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.bitsy-results--filters-right .bitsy-results__layout{flex-direction:row-reverse}
+.bitsy-filters{flex:1 1 220px;max-width:260px;display:flex;flex-direction:column;gap:18px;text-align:left}
+.bitsy-filters__head{display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.bitsy-filter{border:0;border-top:1px solid rgba(0,0,0,.12);margin:0;padding:12px 0 0;display:flex;flex-direction:column;gap:8px}
+.bitsy-filter legend{float:left;width:100%;padding:0;margin-bottom:6px;font-weight:600}
+.bitsy-filter label{display:flex;align-items:center;gap:8px;cursor:pointer}
+.bitsy-filter__count{margin-left:auto;opacity:.6;font-size:.9em}
+.bitsy-filter__price{display:flex;gap:8px}
+.bitsy-filter__price label{flex:1 1 0;flex-direction:column;align-items:stretch;gap:2px}
+.bitsy-results__main{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.bitsy-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid rgba(0,0,0,.12)}
+.bitsy-toolbar label{display:flex;align-items:center;gap:8px}
+.bitsy-toolbar .bitsy-select{height:38px;width:auto}
+.bitsy-cols{display:flex;gap:4px}
+.bitsy-cols button{width:38px;height:38px;border-radius:6px;border:1px solid rgba(0,0,0,.25);background:#fff;color:#1a1a1a;font:inherit;font-weight:700;cursor:pointer}
+.bitsy-cols button[aria-pressed="true"]{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.bitsy-grid{display:grid;grid-template-columns:repeat(var(--b-cols,4),minmax(0,1fr));gap:var(--b-grid-gap,16px)}
+.bitsy-card{display:flex;flex-direction:column;gap:6px;padding:var(--b-card-pad,0);border:var(--b-card-bw,0) solid var(--b-card-border,transparent);border-radius:var(--b-card-r,8px);background:var(--b-card-bg,transparent);box-shadow:var(--b-card-shadow,none);text-align:var(--b-card-align,left)}
+.bitsy-card__media{position:relative;display:block;aspect-ratio:var(--b-ratio,1/1);border-radius:var(--b-card-img-r,8px);overflow:hidden;background:var(--b-img-bg,#f2f2f2)}
+.bitsy-card__media img{position:absolute;inset:0;width:100%;height:100%;object-fit:var(--b-img-fit,contain);transition:opacity .2s}
+.bitsy-card__media img+img{opacity:0}
+.bitsy-card__media:hover img+img{opacity:1}
+.bitsy-card__brand{font-size:12px;text-transform:uppercase;letter-spacing:.04em;opacity:.75}
+.bitsy-card__title{font-weight:600;color:inherit;text-decoration:none}
+.bitsy-card__sku{font-size:12px;opacity:.75}
+.bitsy-card__row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.bitsy-card__price{font-weight:700}
+.bitsy-card__compare{text-decoration:line-through;opacity:.6;font-weight:400;margin-left:6px}
+.bitsy-card__stock{font-size:12px;font-weight:600;color:var(--b-success,#1e6b3a)}
+.bitsy-card__stock--out{color:var(--b-error,#8a2b1d)}
+.bitsy-card__fit{align-self:var(--b-fit-align,flex-start);padding:2px 8px;border-radius:999px;background:var(--b-fit-bg,#e8f5ec);color:var(--b-fit-text,#1e6b3a);font-size:12px;font-weight:600}
+.bitsy-card .bitsy-btn{margin-top:auto;width:100%;background:var(--b-card-btn-bg,var(--b-btn-bg,#1f2a44));color:var(--b-card-btn-text,var(--b-btn-text,#fff))}
+.bitsy-pages{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding-top:12px}
+.bitsy-pages button{min-width:38px;height:38px;padding:0 10px;border-radius:6px;border:1px solid rgba(0,0,0,.25);background:#fff;color:#1a1a1a;font:inherit;cursor:pointer}
+.bitsy-pages button[aria-current="page"]{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.bitsy-empty{padding:24px;border-radius:10px;background:rgba(0,0,0,.04);text-align:center}
+.bitsy-loading{padding:32px;text-align:center;opacity:.75}
+.bitsy-drawer-btn{display:none}
+.bitsy-results--drawer .bitsy-filters{display:none}
+.bitsy-results--drawer .bitsy-drawer-btn{display:inline-flex}
+.bitsy-results--drawer.bitsy-results--drawer-open .bitsy-filters{display:flex;position:fixed;inset:0 auto 0 0;z-index:2147482000;width:min(320px,88vw);max-width:none;background:#fff;color:#1a1a1a;padding:20px;overflow-y:auto;box-shadow:0 0 40px rgba(0,0,0,.3)}
+
+@media (max-width:749px){
+  .bitsy{padding:var(--b-pt-m,var(--b-pt,0)) var(--b-px-m,var(--b-px,0)) var(--b-pb-m,var(--b-pb,0))}
+  .bitsy__heading{font-size:var(--b-heading-size-m,var(--b-heading-size,22px))}
+  .bitsy--hide-mobile{display:none!important}
+  .bitsy-btn--full-m{width:100%}
+  .bitsy-grid{grid-template-columns:repeat(var(--b-cols-m,2),minmax(0,1fr))}
+  .bitsy-filters{max-width:none}
+  .bitsy-hero{min-height:var(--b-hero-h-m,var(--b-hero-h,480px))}
+  .bitsy-hero__media--desktop.bitsy-hero__media--has-mobile{display:none}
+  .bitsy-hero__media--mobile{display:block}
+  .bitsy-hero__panel .bitsy-ymm--grid .bitsy-ymm__fields,.bitsy-hero__panel .bitsy-ymm--row .bitsy-ymm__fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bitsy-bar--collapse .bitsy-bar__toggle{display:inline-flex}
+  .bitsy-bar--collapse:not(.bitsy-bar--open) .bitsy-bar__form{display:none}
+  .bitsy-bar--collapse .bitsy-bar__title{display:none}
+  .bitsy-cols{display:none}
+}
+@media (min-width:750px){.bitsy--hide-desktop{display:none!important}}

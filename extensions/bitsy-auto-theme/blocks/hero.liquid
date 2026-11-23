@@ -1,0 +1,225 @@
+{%- liquid
+  assign s = block.settings
+  assign bid = 'bitsy-' | append: block.id
+  assign cls = 'bitsy bitsy-hero-wrap'
+  if s.full_width
+    assign cls = cls | append: ' bitsy--full'
+  endif
+  unless s.show_mobile
+    assign cls = cls | append: ' bitsy--hide-mobile'
+  endunless
+  unless s.show_desktop
+    assign cls = cls | append: ' bitsy--hide-desktop'
+  endunless
+  if s.css_class != blank
+    assign cls = cls | append: ' ' | append: s.css_class
+  endif
+-%}
+<script src="{{ 'bitsy.js' | asset_url }}" defer></script>
+{%- liquid
+  assign heights = 'small:420,medium:560,large:720' | split: ','
+  assign h = s.height_custom | append: 'px'
+  for p in heights
+    assign kv = p | split: ':'
+    if s.height == kv[0]
+      assign h = kv[1] | append: 'px'
+    endif
+  endfor
+  if s.height == 'full'
+    assign h = '100vh'
+  endif
+  assign hm = s.height_m_custom | append: 'px'
+  for p in heights
+    assign kv = p | split: ':'
+    if s.height_m == kv[0]
+      assign hm = kv[1] | append: 'px'
+    endif
+  endfor
+  if s.height_m == 'full'
+    assign hm = '100svh'
+  endif
+  if s.height_m == 'same'
+    assign hm = h
+  endif
+  assign o = s.overlay_opacity | divided_by: 100.0
+  assign po = s.panel_opacity | divided_by: 100.0
+  assign panel_bg = s.panel_bg | color_modify: 'alpha', po
+  case s.v_align
+    when 'top'
+      assign va = 'flex-start'
+    when 'bottom'
+      assign va = 'flex-end'
+    else
+      assign va = 'center'
+  endcase
+  case s.h_align
+    when 'center'
+      assign ha = 'center'
+    when 'right'
+      assign ha = 'flex-end'
+    else
+      assign ha = 'flex-start'
+  endcase
+-%}
+{%- capture extra -%}
+--b-hero-h:{{ h }};--b-hero-h-m:{{ hm }};--b-valign:{{ va }};--b-halign:{{ ha }};--b-content-w:{{ s.content_width }}px;
+--b-overlay-c:{{ s.overlay_color }};--b-overlay-o:{{ o }};--b-panel-bg:{{ panel_bg }};--b-panel-text:{{ s.panel_text }};
+--b-panel-pad:{{ s.panel_pad }}px;--b-panel-r:{{ s.panel_radius }}px;{% if s.panel_shadow %}--b-panel-shadow:0 18px 40px rgba(0,0,0,.25);{% endif %}
+{%- endcapture -%}
+{%- render 'bitsy-config' -%}
+{%- render 'bitsy-style', s: s, id: bid, extra: extra -%}
+<div id="{{ bid }}" class="{{ cls }}" {{ block.shopify_attributes }} style="padding:0">
+  <section class="bitsy-hero" style="padding:var(--b-pt,0) var(--b-px,0) var(--b-pb,0)">
+    {%- if s.image != blank -%}
+      <div class="bitsy-hero__media bitsy-hero__media--desktop{% if s.image_mobile != blank %} bitsy-hero__media--has-mobile{% endif %}">
+        {%- assign focal = 'object-position:' | append: s.image.presentation.focal_point -%}
+        {{ s.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1100,1500,1920,2400', alt: s.image.alt, style: focal }}
+      </div>
+    {%- endif -%}
+    {%- if s.image_mobile != blank -%}
+      <div class="bitsy-hero__media bitsy-hero__media--mobile">
+        {%- assign focal_m = 'object-position:' | append: s.image_mobile.presentation.focal_point -%}
+        {{ s.image_mobile | image_url: width: 1200 | image_tag: loading: 'eager', sizes: '100vw', widths: '450,750,1000,1200', alt: s.image_mobile.alt, style: focal_m }}
+      </div>
+    {%- endif -%}
+    <div class="bitsy-hero__overlay" aria-hidden="true"></div>
+    <div class="bitsy__inner">
+      <div class="bitsy-hero__content">
+        {%- if s.heading != blank -%}<h2 class="bitsy__heading">{{ s.heading }}</h2>{%- endif -%}
+        {%- if s.subheading != blank -%}<div class="bitsy__sub">{{ s.subheading }}</div>{%- endif -%}
+        <div class="bitsy-hero__panel bitsy-hero__panel--{{ s.panel_style }}">
+          {%- render 'bitsy-ymm', s: s -%}
+        </div>
+        {%- if s.link_text != blank and s.link_url != blank -%}<a class="bitsy-link" href="{{ s.link_url }}">{{ s.link_text }}</a>{%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+{% schema %}
+{"name":"Vehicle search hero","target":"content","stylesheet":"bitsy.css","settings":[{"type":"header","content":"t:l.4p"},
+{"type":"image_picker","id":"image","label":"t:l.4q","info":"t:l.4r"},
+{"type":"image_picker","id":"image_mobile","label":"t:l.4s","info":"t:l.4t"},
+{"type":"color","id":"overlay_color","label":"t:l.43","default":"#000000"},
+{"type":"range","id":"overlay_opacity","label":"t:l.44","min":0,"max":90,"step":5,"default":45,"unit":"%"},
+{"type":"header","content":"t:l.4u"},
+{"type":"select","id":"height","label":"t:l.4v","default":"medium","options":[{"value":"small","label":"t:l.4w"},{"value":"medium","label":"t:l.39"},{"value":"large","label":"t:l.4x"},{"value":"full","label":"t:l.4y"},{"value":"custom","label":"t:l.4z"}]},
+{"type":"range","id":"height_custom","label":"t:l.50","min":300,"max":1000,"step":10,"default":640,"unit":"px"},
+{"type":"select","id":"height_m","label":"t:l.51","default":"small","options":[{"value":"same","label":"t:l.52"},{"value":"small","label":"t:l.4w"},{"value":"medium","label":"t:l.39"},{"value":"large","label":"t:l.4x"},{"value":"full","label":"t:l.4y"},{"value":"custom","label":"t:l.4z"}]},
+{"type":"range","id":"height_m_custom","label":"t:l.53","min":240,"max":900,"step":10,"default":480,"unit":"px"},
+{"type":"select","id":"h_align","label":"t:l.54","default":"left","options":[{"value":"left","label":"t:l.10"},{"value":"center","label":"t:l.11"},{"value":"right","label":"t:l.12"}]},
+{"type":"select","id":"v_align","label":"t:l.55","default":"middle","options":[{"value":"top","label":"t:l.56"},{"value":"middle","label":"t:l.57"},{"value":"bottom","label":"t:l.58"}]},
+{"type":"range","id":"content_width","label":"t:l.59","min":400,"max":1200,"step":20,"default":760,"unit":"px"},
+{"type":"header","content":"t:l.1q"},
+{"type":"text","id":"heading","label":"t:l.6","default":"The right part, first time"},
+{"type":"richtext","id":"subheading","label":"t:l.4d","default":"<p>Choose your vehicle and we'll show only the parts that fit.</p>"},
+{"type":"text","id":"link_text","label":"t:l.5a"},
+{"type":"url","id":"link_url","label":"t:l.5b"},
+{"type":"header","content":"t:l.5c"},
+{"type":"select","id":"panel_style","label":"t:l.5d","default":"card","options":[{"value":"card","label":"t:l.4h"},{"value":"glass","label":"t:l.5e"},{"value":"none","label":"t:l.4g"}]},
+{"type":"color","id":"panel_bg","label":"t:l.5f","default":"#FFFFFF"},
+{"type":"range","id":"panel_opacity","label":"t:l.5g","min":0,"max":100,"step":5,"default":100,"unit":"%"},
+{"type":"color","id":"panel_text","label":"t:l.5h","default":"#1A1A1A"},
+{"type":"range","id":"panel_pad","label":"t:l.5i","min":8,"max":48,"step":2,"default":18,"unit":"px"},
+{"type":"range","id":"panel_radius","label":"t:l.5j","min":0,"max":32,"step":1,"default":12,"unit":"px"},
+{"type":"checkbox","id":"panel_shadow","label":"t:l.5k","default":false},
+{"type":"header","content":"t:l.o"},
+{"type":"checkbox","id":"full_width","label":"t:l.p","default":false},
+{"type":"range","id":"max_width","label":"t:l.q","min":600,"max":1600,"step":20,"default":1200,"unit":"px"},
+{"type":"range","id":"pad_top","label":"t:l.r","min":0,"max":160,"step":4,"default":56,"unit":"px"},
+{"type":"range","id":"pad_bottom","label":"t:l.s","min":0,"max":160,"step":4,"default":56,"unit":"px"},
+{"type":"range","id":"pad_top_m","label":"t:l.t","min":0,"max":120,"step":4,"default":40,"unit":"px"},
+{"type":"range","id":"pad_bottom_m","label":"t:l.u","min":0,"max":120,"step":4,"default":40,"unit":"px"},
+{"type":"range","id":"pad_x","label":"t:l.v","min":0,"max":80,"step":2,"default":24,"unit":"px"},
+{"type":"range","id":"pad_x_m","label":"t:l.w","min":0,"max":40,"step":2,"default":16,"unit":"px"},
+{"type":"range","id":"margin_top","label":"t:l.x","min":0,"max":120,"step":4,"default":0,"unit":"px"},
+{"type":"range","id":"margin_bottom","label":"t:l.y","min":0,"max":120,"step":4,"default":0,"unit":"px"},
+{"type":"select","id":"align","label":"t:l.z","default":"left","options":[{"value":"left","label":"t:l.10"},{"value":"center","label":"t:l.11"},{"value":"right","label":"t:l.12"}]},
+{"type":"range","id":"gap","label":"t:l.13","min":0,"max":40,"step":2,"default":16,"unit":"px"},
+{"type":"header","content":"t:l.14"},
+{"type":"checkbox","id":"use_theme_fonts","label":"t:l.15","default":true},
+{"type":"font_picker","id":"heading_font","label":"t:l.16","default":"assistant_n7","info":"t:l.17"},
+{"type":"font_picker","id":"body_font","label":"t:l.18","default":"assistant_n4"},
+{"type":"range","id":"heading_size","label":"t:l.19","min":12,"max":72,"step":1,"default":46,"unit":"px"},
+{"type":"range","id":"heading_size_m","label":"t:l.1a","min":12,"max":48,"step":1,"default":30,"unit":"px"},
+{"type":"range","id":"body_size","label":"t:l.1b","min":11,"max":22,"step":1,"default":15,"unit":"px"},
+{"type":"range","id":"label_size","label":"t:l.1c","min":10,"max":18,"step":1,"default":12,"unit":"px"},
+{"type":"range","id":"button_size","label":"t:l.1d","min":11,"max":22,"step":1,"default":15,"unit":"px"},
+{"type":"range","id":"letter_spacing","label":"t:l.1e","min":-1,"max":5,"step":0.1,"default":0,"unit":"px"},
+{"type":"range","id":"line_height","label":"t:l.1f","min":1,"max":2,"step":0.05,"default":1.5},
+{"type":"select","id":"heading_case","label":"t:l.1g","default":"none","options":[{"value":"none","label":"t:l.1h"},{"value":"uppercase","label":"t:l.1i"},{"value":"capitalize","label":"t:l.1j"}]},
+{"type":"select","id":"label_case","label":"t:l.1k","default":"none","options":[{"value":"none","label":"t:l.1h"},{"value":"uppercase","label":"t:l.1i"},{"value":"capitalize","label":"t:l.1j"}]},
+{"type":"select","id":"button_case","label":"t:l.1l","default":"none","options":[{"value":"none","label":"t:l.1h"},{"value":"uppercase","label":"t:l.1i"},{"value":"capitalize","label":"t:l.1j"}]},
+{"type":"header","content":"t:l.1m"},
+{"type":"color","id":"color_bg","label":"t:l.1n","default":"#39434F"},
+{"type":"color_background","id":"bg_gradient","label":"t:l.1o","info":"t:l.1p"},
+{"type":"color","id":"color_heading","label":"t:l.6","default":"#FFFFFF"},
+{"type":"color","id":"color_text","label":"t:l.1q","default":"#FFFFFF"},
+{"type":"color","id":"color_label","label":"t:l.1r"},
+{"type":"color","id":"color_link","label":"t:l.1s","default":"#FFFFFF"},
+{"type":"color","id":"sel_bg","label":"t:l.1t","default":"#FFFFFF"},
+{"type":"color","id":"sel_text","label":"t:l.1u","default":"#1A1A1A"},
+{"type":"color","id":"sel_border","label":"t:l.1v","default":"#BDBDBD"},
+{"type":"color","id":"sel_dis_bg","label":"t:l.1w","default":"#EEEEEE"},
+{"type":"color","id":"sel_dis_text","label":"t:l.1x","default":"#6B6B6B"},
+{"type":"color","id":"focus","label":"t:l.1y","default":"#005BD3"},
+{"type":"color","id":"btn_bg","label":"t:l.1z","default":"#F2B705"},
+{"type":"color","id":"btn_text","label":"t:l.20","default":"#1A1A1A"},
+{"type":"color","id":"btn_border","label":"t:l.21"},
+{"type":"color","id":"btn_hover_bg","label":"t:l.22"},
+{"type":"color","id":"btn_hover_text","label":"t:l.23"},
+{"type":"color","id":"btn2_bg","label":"t:l.24"},
+{"type":"color","id":"btn2_text","label":"t:l.25","default":"#1A1A1A"},
+{"type":"color","id":"btn2_border","label":"t:l.26","default":"#BDBDBD"},
+{"type":"color","id":"btn2_hover_bg","label":"t:l.27"},
+{"type":"color","id":"btn2_hover_text","label":"t:l.28"},
+{"type":"color","id":"garage_icon","label":"t:l.29","default":"#1A1A1A"},
+{"type":"color","id":"badge_bg","label":"t:l.2a","default":"#F2B705"},
+{"type":"color","id":"badge_text","label":"t:l.2b","default":"#1A1A1A"},
+{"type":"color","id":"success","label":"t:l.2c","default":"#1E6B3A"},
+{"type":"color","id":"error","label":"t:l.2d","default":"#B3261E"},
+{"type":"header","content":"t:l.2e"},
+{"type":"select","id":"sel_layout","label":"t:l.o","default":"grid","options":[{"value":"row","label":"t:l.2f"},{"value":"grid","label":"t:l.2g"},{"value":"stacked","label":"t:l.2h"}]},
+{"type":"checkbox","id":"show_labels","label":"t:l.2i","default":true},
+{"type":"text","id":"label_make","label":"t:l.2j","default":"Make"},
+{"type":"text","id":"label_model","label":"t:l.2k","default":"Model"},
+{"type":"text","id":"label_year","label":"t:l.2l","default":"Year"},
+{"type":"text","id":"label_engine","label":"t:l.2m","default":"Engine"},
+{"type":"text","id":"ph_make","label":"t:l.2n","default":"Select make"},
+{"type":"text","id":"ph_model","label":"t:l.2o","default":"Select model"},
+{"type":"text","id":"ph_year","label":"t:l.2p","default":"Select year"},
+{"type":"text","id":"ph_engine","label":"t:l.2q","default":"Select engine"},
+{"type":"text","id":"msg_incomplete","label":"t:l.2r","default":"Choose Make, Model, Year and Engine."},
+{"type":"range","id":"sel_height","label":"t:l.2s","min":32,"max":64,"step":2,"default":44,"unit":"px"},
+{"type":"range","id":"sel_radius","label":"t:l.2t","min":0,"max":32,"step":1,"default":6,"unit":"px"},
+{"type":"range","id":"sel_border_width","label":"t:l.2u","min":0,"max":4,"step":1,"default":1,"unit":"px"},
+{"type":"range","id":"sel_pad","label":"t:l.2v","min":4,"max":24,"step":1,"default":12,"unit":"px"},
+{"type":"checkbox","id":"auto_advance","label":"t:l.2w","default":true},
+{"type":"checkbox","id":"prefill","label":"t:l.2x","default":true},
+{"type":"header","content":"t:l.2y"},
+{"type":"text","id":"btn_label","label":"t:l.20","default":"Find parts"},
+{"type":"checkbox","id":"btn_icon","label":"t:l.2z","default":false},
+{"type":"range","id":"btn_height","label":"t:l.30","min":32,"max":64,"step":2,"default":48,"unit":"px"},
+{"type":"range","id":"btn_radius","label":"t:l.31","min":0,"max":32,"step":1,"default":6,"unit":"px"},
+{"type":"range","id":"btn_border_width","label":"t:l.32","min":0,"max":4,"step":1,"default":0,"unit":"px"},
+{"type":"range","id":"btn_pad","label":"t:l.33","min":8,"max":48,"step":2,"default":18,"unit":"px"},
+{"type":"select","id":"btn_width","label":"t:l.34","default":"auto","options":[{"value":"auto","label":"t:l.35"},{"value":"full","label":"t:l.p"}]},
+{"type":"select","id":"btn_width_m","label":"t:l.36","default":"full","options":[{"value":"auto","label":"t:l.35"},{"value":"full","label":"t:l.p"}]},
+{"type":"select","id":"btn_weight","label":"t:l.37","default":"700","options":[{"value":"400","label":"t:l.38"},{"value":"500","label":"t:l.39"},{"value":"600","label":"t:l.3a"},{"value":"700","label":"t:l.3b"},{"value":"800","label":"t:l.3c"}]},
+{"type":"header","content":"t:l.3d"},
+{"type":"checkbox","id":"show_vin","label":"t:l.3e","default":true},
+{"type":"text","id":"vin_link","label":"t:l.3f","default":"Search by VIN"},
+{"type":"text","id":"vin_back","label":"t:l.3g","default":"Use Make and Model"},
+{"type":"text","id":"vin_placeholder","label":"t:l.3h","default":"Enter your 17-character VIN"},
+{"type":"text","id":"vin_paused","label":"t:l.3i","default":"VIN search is paused for now. Please choose your vehicle by Make and Model."},
+{"type":"checkbox","id":"show_garage","label":"t:l.3j","default":true},
+{"type":"text","id":"garage_label","label":"t:l.3k","default":"My Garage"},
+{"type":"checkbox","id":"garage_icon_only","label":"t:l.3l","default":false},
+{"type":"checkbox","id":"show_badge","label":"t:l.3m","default":true},
+{"type":"range","id":"icon_size","label":"t:l.3n","min":16,"max":40,"step":1,"default":22,"unit":"px"},
+{"type":"header","content":"t:l.45"},
+{"type":"checkbox","id":"show_desktop","label":"t:l.46","default":true},
+{"type":"checkbox","id":"show_mobile","label":"t:l.47","default":true},
+{"type":"header","content":"t:l.48"},
+{"type":"text","id":"css_class","label":"t:l.49"},
+{"type":"textarea","id":"custom_css","label":"t:l.4a","info":"t:l.4b"}]}
+{% endschema %}

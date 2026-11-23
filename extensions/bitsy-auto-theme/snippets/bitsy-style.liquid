@@ -1,0 +1,26 @@
+{%- comment -%}
+  Turns a block's theme editor settings into CSS variables on #{{ id }}.
+  Params: s = block.settings, id = element id, extra = more declarations from the block.
+{%- endcomment -%}
+{%- liquid
+  assign px = 'max_width:max,pad_top:pt,pad_bottom:pb,pad_top_m:pt-m,pad_bottom_m:pb-m,pad_x:px,pad_x_m:px-m,margin_top:mt,margin_bottom:mb,gap:gap,heading_size:heading-size,heading_size_m:heading-size-m,body_size:body-size,label_size:label-size,button_size:btn-size,sel_height:sel-h,sel_radius:sel-r,sel_border_width:sel-bw,sel_pad:sel-pad,btn_height:btn-h,btn_radius:btn-r,btn_border_width:btn-bw,btn_pad:btn-pad,icon_size:icon' | split: ','
+  assign colors = 'color_bg:bg,color_heading:heading,color_text:text,color_label:label,color_link:link,sel_bg:sel-bg,sel_text:sel-text,sel_border:sel-border,sel_dis_bg:sel-dis-bg,sel_dis_text:sel-dis-text,focus:focus,btn_bg:btn-bg,btn_text:btn-text,btn_border:btn-border,btn_hover_bg:btn-hover-bg,btn_hover_text:btn-hover-text,btn2_bg:btn2-bg,btn2_text:btn2-text,btn2_border:btn2-border,btn2_hover_bg:btn2-hover-bg,btn2_hover_text:btn2-hover-text,garage_icon:garage,badge_bg:badge-bg,badge_text:badge-text,success:success,error:error' | split: ','
+  assign words = 'heading_case:heading-case,label_case:label-case,button_case:btn-case,btn_weight:btn-weight' | split: ','
+  assign hf = s.heading_font
+  assign bf = s.body_font
+-%}
+<style>
+{%- unless s.use_theme_fonts -%}{{ hf | font_face: font_display: 'swap' }}{{ bf | font_face: font_display: 'swap' }}{%- endunless -%}
+#{{ id }}{
+{%- for p in px -%}{%- assign kv = p | split: ':' -%}{%- assign v = s[kv[0]] -%}{%- if v != nil and v != '' -%}--b-{{ kv[1] }}:{{ v }}px;{%- endif -%}{%- endfor -%}
+{%- for p in colors -%}{%- assign kv = p | split: ':' -%}{%- assign v = s[kv[0]] -%}{%- if v != blank -%}--b-{{ kv[1] }}:{{ v }};{%- endif -%}{%- endfor -%}
+{%- for p in words -%}{%- assign kv = p | split: ':' -%}{%- assign v = s[kv[0]] -%}{%- if v != blank -%}--b-{{ kv[1] }}:{{ v }};{%- endif -%}{%- endfor -%}
+{%- if s.bg_gradient != blank -%}--b-bg-gradient:{{ s.bg_gradient }};{%- endif -%}
+{%- if s.letter_spacing != nil -%}--b-ls:{{ s.letter_spacing }}px;{%- endif -%}
+{%- if s.line_height != nil -%}--b-line:{{ s.line_height }};{%- endif -%}
+{%- case s.align -%}{%- when 'center' -%}--b-align:center;--b-justify:center;{%- when 'right' -%}--b-align:right;--b-justify:flex-end;{%- else -%}--b-align:left;--b-justify:flex-start;{%- endcase -%}
+{%- unless s.use_theme_fonts -%}--b-heading-font:{{ hf.family }},{{ hf.fallback_families }};--b-heading-weight:{{ hf.weight }};--b-heading-style:{{ hf.style }};--b-body-font:{{ bf.family }},{{ bf.fallback_families }};{%- endunless -%}
+{{ extra }}
+{%- if s.custom_css != blank -%}{{ s.custom_css }}{%- endif -%}
+}
+</style>

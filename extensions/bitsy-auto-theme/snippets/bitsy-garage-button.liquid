@@ -1,0 +1,6 @@
+{%- comment -%} Opens the My Garage popup. Params: s = block.settings {%- endcomment -%}
+<button type="button" class="bitsy-garage-btn" data-garage-open{% if s.garage_icon_only %} aria-label="{{ s.garage_label | escape }}"{% endif %}>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M7 21v-6h10v6"/><path d="M7 18h10"/></svg>
+  {%- unless s.garage_icon_only -%}<span>{{ s.garage_label }}</span>{%- endunless -%}
+  {%- if s.show_badge -%}<span class="bitsy-badge" data-garage-count hidden aria-hidden="true">0</span>{%- endif -%}
+</button>

@@ -1,0 +1,64 @@
+{%- comment -%}
+  The vehicle form: Make → Model → Year → Engine (each loaded after the previous one), or VIN.
+  Params: s = block.settings, after = 'results' to always go to the results page, submit_label (optional).
+{%- endcomment -%}
+{%- liquid
+  assign app_s = app.metafields.bitsy.settings.value
+  assign garage_on = true
+  if app_s.garage.enabled == false
+    assign garage_on = false
+  endif
+  assign label_class = 'bitsy__label'
+  unless s.show_labels
+    assign label_class = 'bitsy__label bitsy-sr'
+  endunless
+  assign btn_class = 'bitsy-btn'
+  if s.btn_width == 'full'
+    assign btn_class = btn_class | append: ' bitsy-btn--full'
+  endif
+  if s.btn_width_m == 'full'
+    assign btn_class = btn_class | append: ' bitsy-btn--full-m'
+  endif
+  assign label = submit_label | default: s.btn_label | default: 'Find parts'
+  assign levels = 'make,model,year,engine' | split: ','
+-%}
+<form class="bitsy-ymm bitsy-ymm--{{ s.sel_layout | default: 'row' }}" data-bitsy-ymm data-mode="ymm" data-after="{{ after }}"
+  data-auto-advance="{{ s.auto_advance }}" data-prefill="{{ s.prefill }}"
+  data-vin-paused="{{ s.vin_paused | escape }}" data-incomplete="{{ s.msg_incomplete | default: 'Choose Make, Model, Year and Engine.' | escape }}"
+  action="{{ routes.root_url }}" novalidate>
+  <div class="bitsy-ymm__fields" data-ymm-fields>
+    {%- for l in levels -%}
+      {%- assign lk = 'label_' | append: l -%}
+      {%- assign pk = 'ph_' | append: l -%}
+      <label class="bitsy-field bitsy-field--{{ l }}">
+        <span class="{{ label_class }}">{{ s[lk] | default: l | capitalize }}</span>
+        <select class="bitsy-select" data-level="{{ l }}" data-ph="{{ s[pk] | escape }}"{% unless forloop.first %} disabled{% endunless %}>
+          <option value="">{{ s[pk] }}</option>
+        </select>
+      </label>
+    {%- endfor -%}
+  </div>
+  {%- if s.show_vin -%}
+    <div class="bitsy-ymm__fields" data-vin-fields hidden>
+      <label class="bitsy-field">
+        <span class="{{ label_class }}">VIN</span>
+        <input class="bitsy-input bitsy-input--vin" data-vin maxlength="17" autocomplete="off" spellcheck="false" placeholder="{{ s.vin_placeholder | escape }}">
+      </label>
+    </div>
+  {%- else -%}
+    <div data-vin-fields hidden></div>
+  {%- endif -%}
+  <div class="bitsy-ymm__actions">
+    <button type="submit" class="{{ btn_class }}" data-submit>
+      {%- if s.btn_icon -%}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>{%- endif -%}
+      <span>{{ label }}</span>
+    </button>
+    {%- if s.show_vin -%}
+      <button type="button" class="bitsy-link" data-vin-toggle data-vin-text="{{ s.vin_link | escape }}" data-ymm-text="{{ s.vin_back | escape }}">{{ s.vin_link }}</button>
+    {%- endif -%}
+    {%- if s.show_garage and garage_on -%}
+      {%- render 'bitsy-garage-button', s: s -%}
+    {%- endif -%}
+  </div>
+  <p class="bitsy-msg" data-msg role="status" hidden></p>
+</form>

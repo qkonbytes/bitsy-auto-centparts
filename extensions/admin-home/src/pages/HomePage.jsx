@@ -5,6 +5,7 @@ import {loadInstallation} from '../lib/settings.js';
 import {ensureStorefrontToken} from '../lib/storefront.js';
 import {num, pct, usageTone, nextResetLabel, monthLabel} from '../lib/format.js';
 import VehicleTest from '../components/VehicleTest.jsx';
+import ThemeSetup from '../components/ThemeSetup.jsx';
 
 const SERVICE = {
   live: {tone: 'success', label: 'Live'},
@@ -25,6 +26,7 @@ export default function HomePage() {
   const [checking, setChecking] = useState(false);
   const [counts, setCounts] = useState(/** @type {any} */ (null));
   const [storefront, setStorefront] = useState(/** @type {'ok'|'error'|null} */ (null));
+  const [resultsHandle, setResultsHandle] = useState('parts-for-your-vehicle');
 
   const checkStatus = async () => {
     setChecking(true);
@@ -47,7 +49,10 @@ export default function HomePage() {
       .then(setCounts)
       .catch(() => setCounts({products: null, variants: null}));
     loadInstallation()
-      .then((inst) => ensureStorefrontToken(inst.installationId, inst.storefrontToken))
+      .then((inst) => {
+        setResultsHandle(inst.settings.results.pageHandle);
+        return ensureStorefrontToken(inst.installationId, inst.storefrontToken);
+      })
       .then(() => setStorefront('ok'))
       .catch(() => setStorefront('error'));
   }, []);
@@ -134,6 +139,8 @@ export default function HomePage() {
       </s-grid>
 
       <VehicleTest />
+
+      <ThemeSetup resultsHandle={resultsHandle} />
     </s-page>
   );
 }

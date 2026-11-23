@@ -1,0 +1,28 @@
+{%- comment -%}
+  Prints the storefront config for bitsy.js. Every Bitsy block renders it; the script merges them.
+  App settings and the public Storefront token come from the app-data metafields the admin app saves.
+  Optional: s = the nav bar embed's settings, for the My Garage popup texts.
+{%- endcomment -%}
+<script type="application/json" data-bitsy-config>
+{
+  "proxy": "/apps/bitsy",
+  "root": {{ routes.root_url | json }},
+  "cartAdd": {{ routes.cart_add_url | append: '.js' | json }},
+  "cartUrl": {{ routes.cart_url | json }},
+  "moneyFormat": {{ shop.money_format | json }},
+  "storefrontToken": {{ app.metafields.bitsy.storefront_token.value | json }},
+  "settings": {{ app.metafields.bitsy.settings.value | json }}
+  {%- if s -%},
+  "vinEnabled": {{ s.show_vin | json }},
+  "vinPlaceholder": {{ s.vin_placeholder | json }},
+  "placeholders": {"make": {{ s.ph_make | json }}, "model": {{ s.ph_model | json }}, "year": {{ s.ph_year | json }}, "engine": {{ s.ph_engine | json }}},
+  "garageShowKtype": {{ s.garage_show_ktype | json }},
+  "garageShowVin": {{ s.garage_show_vin | json }},
+  "garageText": {
+    "title": {{ s.garage_title | json }}, "empty": {{ s.garage_empty | json }}, "add": {{ s.garage_add | json }},
+    "shop": {{ s.garage_shop | json }}, "full": {{ s.garage_full | json }}, "save": {{ s.garage_save | json }},
+    "cancel": {{ s.garage_cancel | json }}, "selected": {{ s.garage_selected | json }}
+  }
+  {%- endif %}
+}
+</script>
