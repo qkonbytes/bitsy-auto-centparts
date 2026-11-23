@@ -24,7 +24,8 @@ embedded_app_direct_api_access = true
 # read_themes                           check whether the app embed is switched on
 # unauthenticated_read_product_listings Storefront API: product cards on results and collections
 # unauthenticated_read_product_inventory Storefront API: stock status on cards
-scopes = "read_products,write_online_store_pages,read_themes,unauthenticated_read_product_listings,unauthenticated_read_product_inventory"
+# write_app_proxy                       required for the App Proxy /apps/bitsy
+scopes = "read_products,write_online_store_pages,read_themes,unauthenticated_read_product_listings,unauthenticated_read_product_inventory,write_app_proxy"
 
 [auth]
 redirect_urls = [ "https://shopify.dev/apps/app-home/api/auth" ]

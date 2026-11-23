@@ -23,7 +23,7 @@ There is no server to host. The admin screens are hosted by Shopify; all data ca
 | App URL | `https://shopify.dev/apps/default-app-home` |
 | Allowed redirection URL | `https://shopify.dev/apps/app-home/api/auth` |
 | Embedded | Yes |
-| Scopes | `read_products, write_online_store_pages, read_themes, unauthenticated_read_product_listings, unauthenticated_read_product_inventory` |
+| Scopes | `read_products, write_online_store_pages, read_themes, unauthenticated_read_product_listings, unauthenticated_read_product_inventory, write_app_proxy` |
 | App proxy | Prefix `apps`, subpath `bitsy`, URL `https://uclehygojvydvyzsqvzk.supabase.co/functions/v1/storefront` |
 | Distribution | Custom (App Home UI extensions require custom distribution) |
 
