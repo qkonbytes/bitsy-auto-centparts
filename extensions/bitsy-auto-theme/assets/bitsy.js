@@ -122,8 +122,43 @@
   function vehicleTitle(v) { return [v.make && v.make.name, v.model && v.model.name].filter(Boolean).join(' ') + (v.year ? ' · ' + v.year : ''); }
   function vehicleFull(v) { return vehicleTitle(v) + (v.label ? ' · ' + v.label : ''); }
 
+  /* Wording from the Bitsy Auto design embed (labels, placeholders, VIN and garage texts). */
+  function applyTexts(root) {
+    var t = config.texts;
+    if (!t) return;
+    LEVELS.forEach(function (l) {
+      $$('select[data-level="' + l + '"]', root).forEach(function (sel) {
+        var label = sel.closest('label');
+        var span = label && $('.bitsy__label', label);
+        if (span && t.labels && t.labels[l]) span.textContent = t.labels[l];
+        var ph = t.placeholders && t.placeholders[l];
+        if (ph) {
+          sel.setAttribute('data-ph', ph);
+          if (sel.options[0] && sel.options[0].value === '') sel.options[0].textContent = ph;
+        }
+      });
+    });
+    $$('[data-vin-toggle]', root).forEach(function (b) {
+      if (t.vinLink) b.setAttribute('data-vin-text', t.vinLink);
+      if (t.vinBack) b.setAttribute('data-ymm-text', t.vinBack);
+      var form = b.closest('form');
+      b.textContent = b.getAttribute(form && form.getAttribute('data-mode') === 'vin' ? 'data-ymm-text' : 'data-vin-text');
+    });
+    if (t.vinPlaceholder) $$('[data-vin]', root).forEach(function (i) { i.placeholder = t.vinPlaceholder; });
+    $$('form[data-bitsy-ymm]', root).forEach(function (f) {
+      if (t.vinPaused) f.setAttribute('data-vin-paused', t.vinPaused);
+      if (t.incomplete) f.setAttribute('data-incomplete', t.incomplete);
+      if (t.autoAdvance === false) f.setAttribute('data-auto-advance', 'false');
+    });
+    if (t.garageLabel) {
+      $$('[data-garage-label]', root).forEach(function (el) { el.textContent = t.garageLabel; });
+      $$('[data-garage-open][aria-label]', root).forEach(function (el) { el.setAttribute('aria-label', t.garageLabel); });
+    }
+  }
+
   /* ---------- Vehicle form: Make → Model → Year → Engine, or VIN ---------- */
   function VehicleForm(form) {
+    applyTexts(form);
     this.form = form;
     this.selects = {};
     var self = this;
@@ -359,8 +394,10 @@
 
   /* Markup for a vehicle form created in script (inside the garage popup). */
   function buildFormHtml(o) {
-    var ph = config.placeholders || {};
+    var tx = config.texts || {};
+    var ph = tx.placeholders || {}, lb = tx.labels || {};
     var field = function (l, label) {
+      label = lb[l] || label;
       return '<label class="bitsy-field bitsy-field--' + l + '"><span class="bitsy__label">' + esc(label) + '</span>' +
         '<select class="bitsy-select" data-level="' + l + '" data-ph="' + esc(ph[l] || 'Select ' + l) + '"' + (l === 'make' ? '' : ' disabled') + '>' +
         '<option value="">' + esc(ph[l] || 'Select ' + l) + '</option></select></label>';
@@ -368,7 +405,7 @@
     return '<form class="bitsy-ymm bitsy-ymm--' + o.layout + '" data-bitsy-ymm data-mode="ymm" data-after="' + o.after + '" data-prefill="false" novalidate>' +
       (o.vin ? '<div class="bitsy-tabs" role="tablist"><button type="button" class="bitsy-tab" role="tab" aria-selected="true" data-tab="ymm">Make and Model</button><button type="button" class="bitsy-tab" role="tab" aria-selected="false" data-tab="vin">VIN</button></div>' : '') +
       '<div class="bitsy-ymm__fields" data-ymm-fields>' + field('make', 'Make') + field('model', 'Model') + field('year', 'Year') + field('engine', 'Engine') + '</div>' +
-      '<div class="bitsy-ymm__fields" data-vin-fields hidden><label class="bitsy-field"><span class="bitsy__label">VIN</span><input class="bitsy-input bitsy-input--vin" data-vin maxlength="17" autocomplete="off" placeholder="' + esc(config.vinPlaceholder || '17 characters') + '"></label></div>' +
+      '<div class="bitsy-ymm__fields" data-vin-fields hidden><label class="bitsy-field"><span class="bitsy__label">VIN</span><input class="bitsy-input bitsy-input--vin" data-vin maxlength="17" autocomplete="off" placeholder="' + esc(tx.vinPlaceholder || '17 characters') + '"></label></div>' +
       '<div class="bitsy-ymm__actions"><button type="submit" class="bitsy-btn bitsy-btn--full" data-submit>' + esc(modal.text('save', 'Save to garage')) + '</button></div>' +
       '<p class="bitsy-msg" data-msg role="status" hidden></p></form>';
   }
@@ -425,16 +462,16 @@
   /* ---------- Results grid (results page and filtered collections) ---------- */
   function Results(root) {
     this.root = root;
-    var d = root.dataset;
+    var d = root.dataset, cards = config.cards || {}, ct = cards.t || {};
     this.mode = d.mode || 'page';
     this.opts = {
       cols: Number(d.cols) || 4, colsM: Number(d.colsM) || 2, perPage: Number(d.perPage) || Number(config.settings.results.perPage) || 24,
       allowCols: d.allowCols !== 'false', allowPerPage: d.allowPerPage !== 'false', pagination: d.pagination || 'numbers',
       showSort: d.showSort !== 'false', sort: d.defaultSort || 'stock', drawer: d.filtersLayout === 'drawer', counts: d.filterCounts !== 'false',
-      brand: d.cardBrand !== 'false', sku: d.cardSku !== 'false', stock: d.cardStock !== 'false', fit: d.cardFit !== 'false',
-      atc: d.cardAtc !== 'false', hover: d.cardHover !== 'false', afterAdd: d.afterAdd || 'stay',
-      t: {fit: d.tFit || 'Fits your vehicle', atc: d.tAtc || 'Add to cart', added: d.tAdded || 'Added to cart', sold: d.tSold || 'Out of stock',
-        inStock: d.tInStock || 'In stock', count: d.tCount || '{count} parts fit', clear: d.tClear || 'Clear all', filters: d.tFilters || 'Filters',
+      brand: cards.brand !== false, sku: cards.sku !== false, stock: cards.stock !== false, fit: cards.fit !== false,
+      atc: cards.atc !== false, hover: cards.hover !== false, afterAdd: cards.afterAdd || 'stay',
+      t: {fit: ct.fit || 'Fits your vehicle', atc: ct.atc || 'Add to cart', added: ct.added || 'Added to cart', sold: ct.sold || 'Out of stock',
+        inStock: ct.inStock || 'In stock', sku: ct.sku || 'SKU', count: d.tCount || '{count} parts fit', clear: d.tClear || 'Clear all', filters: d.tFilters || 'Filters',
         more: d.tMore || 'Load more', choose: d.tChoose || 'Choose your vehicle above to see the parts that fit.'}
     };
     var f = config.settings.results.filters || {};
@@ -638,7 +675,7 @@
       media,
       o.brand && p.vendor ? h('span', {class: 'bitsy-card__brand', text: p.vendor}) : null,
       h('a', {class: 'bitsy-card__title', href: url, text: p.title}),
-      o.sku && v.sku ? h('span', {class: 'bitsy-card__sku', text: 'SKU ' + v.sku}) : null,
+      o.sku && v.sku ? h('span', {class: 'bitsy-card__sku', text: (t.sku ? t.sku + ' ' : '') + v.sku}) : null,
       priceRow,
       o.fit ? h('span', {class: 'bitsy-card__fit', text: t.fit}) : null
     ]);

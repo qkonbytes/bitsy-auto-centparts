@@ -122,13 +122,13 @@
 .bitsy-card__media img+img{opacity:0}
 .bitsy-card__media:hover img+img{opacity:1}
 .bitsy-card__brand{font-size:12px;text-transform:uppercase;letter-spacing:.04em;opacity:.75}
-.bitsy-card__title{font-weight:600;color:inherit;text-decoration:none}
+.bitsy-card__title{font-weight:600;color:var(--b-card-title,inherit);text-decoration:none}
 .bitsy-card__sku{font-size:12px;opacity:.75}
 .bitsy-card__row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-.bitsy-card__price{font-weight:700}
+.bitsy-card__price{font-weight:700;color:var(--b-card-price,inherit)}
 .bitsy-card__compare{text-decoration:line-through;opacity:.6;font-weight:400;margin-left:6px}
 .bitsy-card__stock{font-size:12px;font-weight:600;color:var(--b-success,#1e6b3a)}
-.bitsy-card__stock--out{color:var(--b-error,#8a2b1d)}
+.bitsy-card__stock--out{color:var(--b-out,var(--b-error,#8a2b1d))}
 .bitsy-card__fit{align-self:var(--b-fit-align,flex-start);padding:2px 8px;border-radius:999px;background:var(--b-fit-bg,#e8f5ec);color:var(--b-fit-text,#1e6b3a);font-size:12px;font-weight:600}
 .bitsy-card .bitsy-btn{margin-top:auto;width:100%;background:var(--b-card-btn-bg,var(--b-btn-bg,#1f2a44));color:var(--b-card-btn-text,var(--b-btn-text,#fff))}
 .bitsy-pages{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding-top:12px}

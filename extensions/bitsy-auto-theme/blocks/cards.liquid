@@ -1,0 +1,54 @@
+{%- liquid
+  assign s = block.settings
+-%}
+<style>:root{
+--b-ratio:{{ s.card_ratio }};--b-img-fit:{{ s.img_fit }};--b-img-bg:{{ s.img_bg }};--b-grid-gap:{{ s.grid_gap }}px;
+--b-card-pad:{{ s.card_pad }}px;--b-card-r:{{ s.card_radius }}px;--b-card-img-r:{{ s.card_radius }}px;--b-card-bw:{{ s.card_border_width }}px;
+--b-card-border:{{ s.card_border }};{% if s.card_bg != blank %}--b-card-bg:{{ s.card_bg }};{% endif %}
+{% if s.card_title != blank %}--b-card-title:{{ s.card_title }};{% endif %}{% if s.card_price != blank %}--b-card-price:{{ s.card_price }};{% endif %}
+{% if s.card_shadow %}--b-card-shadow:0 4px 14px rgba(0,0,0,.08);{% endif %}--b-card-align:{{ s.card_align }};
+{% if s.card_align == 'center' %}--b-fit-align:center;{% endif %}--b-fit-bg:{{ s.fit_bg }};--b-fit-text:{{ s.fit_text_color }};
+--b-card-btn-bg:{{ s.card_btn_bg }};--b-card-btn-text:{{ s.card_btn_text }};--b-out:{{ s.out_color }};
+}</style>
+<script type="application/json" data-bitsy-config>
+{"cards": {"brand": {{ s.card_brand | json }}, "sku": {{ s.card_sku | json }}, "stock": {{ s.card_stock | json }}, "fit": {{ s.card_fit | json }},
+  "atc": {{ s.card_atc | json }}, "hover": {{ s.card_hover | json }}, "afterAdd": {{ s.after_add | json }},
+  "t": {"fit": {{ s.fit_text | json }}, "atc": {{ s.atc_text | json }}, "added": {{ s.added_text | json }}, "sold": {{ s.sold_text | json }},
+        "inStock": {{ s.instock_text | json }}, "sku": {{ s.sku_prefix | json }}}}}
+</script>
+{% schema %}
+{"name":"Bitsy Auto product cards","target":"head","settings":[{"type":"header","content":"Product cards"},
+{"type":"select","id":"card_ratio","label":"Image ratio","default":"1/1","options":[{"value":"1/1","label":"Square"},{"value":"3/4","label":"Portrait"},{"value":"4/3","label":"Landscape"},{"value":"16/9","label":"Wide"}]},
+{"type":"select","id":"img_fit","label":"Image fit","default":"contain","options":[{"value":"contain","label":"Show whole image"},{"value":"cover","label":"Fill and crop"}]},
+{"type":"checkbox","id":"card_hover","label":"Show second image on hover","default":true},
+{"type":"checkbox","id":"card_brand","label":"Show brand","default":true},
+{"type":"checkbox","id":"card_sku","label":"Show part number (SKU)","default":true},
+{"type":"checkbox","id":"card_stock","label":"Show stock status","default":true},
+{"type":"checkbox","id":"card_fit","label":"Show fit label","default":true},
+{"type":"checkbox","id":"card_atc","label":"Show add to cart","default":true},
+{"type":"select","id":"after_add","label":"After add to cart","default":"stay","options":[{"value":"stay","label":"Stay on the page"},{"value":"cart","label":"Go to the cart"}]},
+{"type":"select","id":"card_align","label":"Text alignment","default":"left","options":[{"value":"left","label":"Left"},{"value":"center","label":"Centre"}]},
+{"type":"range","id":"grid_gap","label":"Space between products","min":4,"max":40,"step":2,"default":16,"unit":"px"},
+{"type":"range","id":"card_pad","label":"Card padding","min":0,"max":24,"step":1,"default":0,"unit":"px"},
+{"type":"range","id":"card_radius","label":"Card corner radius","min":0,"max":24,"step":1,"default":8,"unit":"px"},
+{"type":"range","id":"card_border_width","label":"Card border width","min":0,"max":3,"step":1,"default":0,"unit":"px"},
+{"type":"checkbox","id":"card_shadow","label":"Card shadow","default":false},
+{"type":"header","content":"Card text"},
+{"type":"text","id":"fit_text","label":"Fit label","default":"Fits your vehicle"},
+{"type":"text","id":"atc_text","label":"Add to cart","default":"Add to cart"},
+{"type":"text","id":"added_text","label":"Added","default":"Added to cart"},
+{"type":"text","id":"sold_text","label":"Out of stock","default":"Out of stock"},
+{"type":"text","id":"instock_text","label":"In stock","default":"In stock"},
+{"type":"text","id":"sku_prefix","label":"Part number prefix","default":"SKU"},
+{"type":"header","content":"Card colours"},
+{"type":"color","id":"img_bg","label":"Image background","default":"#F2F2F2"},
+{"type":"color","id":"card_bg","label":"Card background"},
+{"type":"color","id":"card_border","label":"Card border","default":"#E5E5E5"},
+{"type":"color","id":"card_title","label":"Title"},
+{"type":"color","id":"card_price","label":"Price"},
+{"type":"color","id":"card_btn_bg","label":"Button background","default":"#1F2A44"},
+{"type":"color","id":"card_btn_text","label":"Button text","default":"#FFFFFF"},
+{"type":"color","id":"fit_bg","label":"Fit label background","default":"#E8F5EC"},
+{"type":"color","id":"fit_text_color","label":"Fit label text","default":"#1E6B3A"},
+{"type":"color","id":"out_color","label":"Out of stock text","default":"#8A2B1D"}]}
+{% endschema %}

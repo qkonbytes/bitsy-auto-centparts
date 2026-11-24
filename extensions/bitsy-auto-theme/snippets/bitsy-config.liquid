@@ -14,8 +14,6 @@
   "settings": {{ app.metafields.bitsy.settings.value | json }}
   {%- if s -%},
   "vinEnabled": {{ s.show_vin | json }},
-  "vinPlaceholder": {{ s.vin_placeholder | json }},
-  "placeholders": {"make": {{ s.ph_make | json }}, "model": {{ s.ph_model | json }}, "year": {{ s.ph_year | json }}, "engine": {{ s.ph_engine | json }}},
   "garageShowKtype": {{ s.garage_show_ktype | json }},
   "garageShowVin": {{ s.garage_show_vin | json }},
   "garageText": {

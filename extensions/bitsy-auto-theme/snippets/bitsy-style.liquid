@@ -1,6 +1,7 @@
 {%- comment -%}
-  Turns a block's theme editor settings into CSS variables on #{{ id }}.
-  Params: s = block.settings, id = element id, extra = more declarations from the block.
+  Turns theme editor settings into CSS variables. Only settings the block has are output, so a
+  block's blank colours fall back to the Bitsy Auto design embed's values on :root.
+  Params: s = block.settings, selector = ':root' or '#element-id', extra = more declarations.
 {%- endcomment -%}
 {%- liquid
   assign px = 'max_width:max,pad_top:pt,pad_bottom:pb,pad_top_m:pt-m,pad_bottom_m:pb-m,pad_x:px,pad_x_m:px-m,margin_top:mt,margin_bottom:mb,gap:gap,heading_size:heading-size,heading_size_m:heading-size-m,body_size:body-size,label_size:label-size,button_size:btn-size,sel_height:sel-h,sel_radius:sel-r,sel_border_width:sel-bw,sel_pad:sel-pad,btn_height:btn-h,btn_radius:btn-r,btn_border_width:btn-bw,btn_pad:btn-pad,icon_size:icon' | split: ','
@@ -10,16 +11,16 @@
   assign bf = s.body_font
 -%}
 <style>
-{%- unless s.use_theme_fonts -%}{{ hf | font_face: font_display: 'swap' }}{{ bf | font_face: font_display: 'swap' }}{%- endunless -%}
-#{{ id }}{
+{%- if hf and s.use_theme_fonts == false -%}{{ hf | font_face: font_display: 'swap' }}{{ bf | font_face: font_display: 'swap' }}{%- endif -%}
+{{ selector }}{
 {%- for p in px -%}{%- assign kv = p | split: ':' -%}{%- assign v = s[kv[0]] -%}{%- if v != nil and v != '' -%}--b-{{ kv[1] }}:{{ v }}px;{%- endif -%}{%- endfor -%}
 {%- for p in colors -%}{%- assign kv = p | split: ':' -%}{%- assign v = s[kv[0]] -%}{%- if v != blank -%}--b-{{ kv[1] }}:{{ v }};{%- endif -%}{%- endfor -%}
 {%- for p in words -%}{%- assign kv = p | split: ':' -%}{%- assign v = s[kv[0]] -%}{%- if v != blank -%}--b-{{ kv[1] }}:{{ v }};{%- endif -%}{%- endfor -%}
 {%- if s.bg_gradient != blank -%}--b-bg-gradient:{{ s.bg_gradient }};{%- endif -%}
 {%- if s.letter_spacing != nil -%}--b-ls:{{ s.letter_spacing }}px;{%- endif -%}
 {%- if s.line_height != nil -%}--b-line:{{ s.line_height }};{%- endif -%}
-{%- case s.align -%}{%- when 'center' -%}--b-align:center;--b-justify:center;{%- when 'right' -%}--b-align:right;--b-justify:flex-end;{%- else -%}--b-align:left;--b-justify:flex-start;{%- endcase -%}
-{%- unless s.use_theme_fonts -%}--b-heading-font:{{ hf.family }},{{ hf.fallback_families }};--b-heading-weight:{{ hf.weight }};--b-heading-style:{{ hf.style }};--b-body-font:{{ bf.family }},{{ bf.fallback_families }};{%- endunless -%}
+{%- case s.align -%}{%- when 'center' -%}--b-align:center;--b-justify:center;{%- when 'right' -%}--b-align:right;--b-justify:flex-end;{%- when 'left' -%}--b-align:left;--b-justify:flex-start;{%- endcase -%}
+{%- if hf and s.use_theme_fonts == false -%}--b-heading-font:{{ hf.family }},{{ hf.fallback_families }};--b-heading-weight:{{ hf.weight }};--b-heading-style:{{ hf.style }};--b-body-font:{{ bf.family }},{{ bf.fallback_families }};{%- endif -%}
 {{ extra }}
 {%- if s.custom_css != blank -%}{{ s.custom_css }}{%- endif -%}
 }

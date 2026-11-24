@@ -8,6 +8,18 @@ const editor = (params) => `shopify:admin/themes/current/editor?${new URLSearchP
 export default function ThemeSetup({resultsHandle}) {
   const steps = [
     {
+      title: 'Bitsy Auto design',
+      body: 'Fonts, colours, dropdown and button style, and wording for every Bitsy section.',
+      href: editor({context: 'apps', activateAppId: `${CLIENT_ID}/design`}),
+      action: 'Turn on',
+    },
+    {
+      title: 'Bitsy Auto product cards',
+      body: 'How product cards look on the results page and on filtered collections.',
+      href: editor({context: 'apps', activateAppId: `${CLIENT_ID}/cards`}),
+      action: 'Turn on',
+    },
+    {
       title: 'Vehicle nav bar and My Garage',
       body: 'Shows Make › Model › Year › Engine and the garage on every page.',
       href: editor({context: 'apps', activateAppId: `${CLIENT_ID}/vehicle-bar`}),

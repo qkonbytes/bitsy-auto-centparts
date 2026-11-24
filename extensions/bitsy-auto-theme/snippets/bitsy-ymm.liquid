@@ -1,6 +1,7 @@
 {%- comment -%}
   The vehicle form: Make → Model → Year → Engine (each loaded after the previous one), or VIN.
   Params: s = block.settings, after = 'results' to always go to the results page, submit_label (optional).
+  Labels, placeholders and VIN texts are set in the Bitsy Auto design embed; bitsy.js applies them.
 {%- endcomment -%}
 {%- liquid
   assign app_s = app.metafields.bitsy.settings.value
@@ -24,16 +25,15 @@
 -%}
 <form class="bitsy-ymm bitsy-ymm--{{ s.sel_layout | default: 'row' }}" data-bitsy-ymm data-mode="ymm" data-after="{{ after }}"
   data-auto-advance="{{ s.auto_advance }}" data-prefill="{{ s.prefill }}"
-  data-vin-paused="{{ s.vin_paused | escape }}" data-incomplete="{{ s.msg_incomplete | default: 'Choose Make, Model, Year and Engine.' | escape }}"
+  data-vin-paused="VIN search is paused for now. Please choose your vehicle by Make and Model." data-incomplete="Choose Make, Model, Year and Engine."
   action="{{ routes.root_url }}" novalidate>
   <div class="bitsy-ymm__fields" data-ymm-fields>
     {%- for l in levels -%}
-      {%- assign lk = 'label_' | append: l -%}
-      {%- assign pk = 'ph_' | append: l -%}
+      {%- assign ph = 'Select ' | append: l -%}
       <label class="bitsy-field bitsy-field--{{ l }}">
-        <span class="{{ label_class }}">{{ s[lk] | default: l | capitalize }}</span>
-        <select class="bitsy-select" data-level="{{ l }}" data-ph="{{ s[pk] | escape }}"{% unless forloop.first %} disabled{% endunless %}>
-          <option value="">{{ s[pk] }}</option>
+        <span class="{{ label_class }}">{{ l | capitalize }}</span>
+        <select class="bitsy-select" data-level="{{ l }}" data-ph="{{ ph }}"{% unless forloop.first %} disabled{% endunless %}>
+          <option value="">{{ ph }}</option>
         </select>
       </label>
     {%- endfor -%}
@@ -42,7 +42,7 @@
     <div class="bitsy-ymm__fields" data-vin-fields hidden>
       <label class="bitsy-field">
         <span class="{{ label_class }}">VIN</span>
-        <input class="bitsy-input bitsy-input--vin" data-vin maxlength="17" autocomplete="off" spellcheck="false" placeholder="{{ s.vin_placeholder | escape }}">
+        <input class="bitsy-input bitsy-input--vin" data-vin maxlength="17" autocomplete="off" spellcheck="false" placeholder="Enter your 17-character VIN">
       </label>
     </div>
   {%- else -%}
@@ -54,7 +54,7 @@
       <span>{{ label }}</span>
     </button>
     {%- if s.show_vin -%}
-      <button type="button" class="bitsy-link" data-vin-toggle data-vin-text="{{ s.vin_link | escape }}" data-ymm-text="{{ s.vin_back | escape }}">{{ s.vin_link }}</button>
+      <button type="button" class="bitsy-link" data-vin-toggle data-vin-text="Search by VIN" data-ymm-text="Use Make and Model">Search by VIN</button>
     {%- endif -%}
     {%- if s.show_garage and garage_on -%}
       {%- render 'bitsy-garage-button', s: s -%}
