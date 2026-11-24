@@ -29,8 +29,11 @@ def para(text):
 
 
 def rng(id, label, lo, hi, step, default, unit="px"):
-    assert (hi - lo) / step <= 101, id
-    assert lo <= default <= hi, id
+    steps = round((hi - lo) / step, 6)
+    assert 3 <= steps <= 101 and steps == int(steps), (id, "range needs 3-101 whole steps")
+    assert lo <= default <= hi, (id, "default outside range")
+    assert abs((default - lo) / step - round((default - lo) / step)) < 1e-9, (id, "default must be on a step")
+    assert len(str(step).split(".")[1]) <= 1 if "." in str(step) else True, (id, "step: max 1 decimal")
     s = {"type": "range", "id": id, "label": label, "min": lo, "max": hi, "step": step, "default": default}
     if unit:
         s["unit"] = unit
@@ -56,6 +59,7 @@ def sel(id, label, options, default):
 
 
 def col(id, label, default=None, info=None):
+    assert default is None or (default.startswith("#") and len(default) in (4, 7)), (id, "colour default must be #hex")
     s = {"type": "color", "id": id, "label": label}
     if default:
         s["default"] = default
@@ -114,7 +118,7 @@ def vehicle_form(d):
         header("Vehicle form"),
         sel("sel_layout", "Dropdown layout", [("row", "One row"), ("grid", "2 × 2 grid"), ("stacked", "Stacked")], d.get("layout", "row")),
         chk("show_labels", "Show labels above dropdowns", d.get("labels", False)),
-        txt("btn_label", "Button text", d.get("label", "Find parts")),
+        txt("btn_label", "Button text", d.get("btn_label", "Find parts")),
         chk("btn_icon", "Show search icon on button", False),
         sel("btn_width", "Button width", [("auto", "Fit text"), ("full", "Full width")], d.get("bw", "auto")),
         sel("btn_width_m", "Button width (mobile)", [("auto", "Fit text"), ("full", "Full width")], "full"),
@@ -142,7 +146,7 @@ def grid():
     return [
         header("Product grid"),
         rng("cols", "Columns (desktop)", 2, 5, 1, 4, unit=None),
-        rng("cols_m", "Columns (mobile)", 1, 2, 1, 2, unit=None),
+        sel("cols_m", "Columns (mobile)", [("1", "1"), ("2", "2")], "2"),
         sel("per_page", "Products per page", [("app", "Use the app setting"), ("12", "12"), ("24", "24"), ("36", "36"), ("48", "48")], "app"),
         chk("allow_cols", "Let shoppers change columns", True),
         chk("allow_per_page", "Let shoppers change products per page", True),
@@ -219,7 +223,7 @@ design_settings = [
     rng("label_size", "Label size", 10, 18, 1, 12),
     rng("button_size", "Button text size", 11, 22, 1, 15),
     rng("letter_spacing", "Heading letter spacing", -1, 5, 0.1, 0),
-    rng("line_height", "Line height", 1, 2, 0.05, 1.5, unit=None),
+    rng("line_height", "Line height", 1, 2, 0.1, 1.5, unit=None),
     sel("heading_case", "Heading text case", CASES, "none"),
     sel("label_case", "Label text case", CASES, "none"),
     sel("button_case", "Button text case", CASES, "none"),
@@ -402,7 +406,7 @@ bar_schema = {
         rng("border_width", "Bottom border width", 0, 4, 1, 0),
         col("border_color", "Bottom border colour", "#000000"),
     ] + [chk("hide_" + k.replace("-", "_"), "Hide on " + l, False) for k, l in TEMPLATES]
-    + block_settings({"pt": 10, "pb": 10, "ptm": 8, "pbm": 8, "bg": "#1F2A44", "heading": "#FFFFFF", "text": "#FFFFFF",
+    + block_settings({"pt": 8, "pb": 8, "ptm": 8, "pbm": 8, "bg": "#1F2A44", "heading": "#FFFFFF", "text": "#FFFFFF",
                       "label": "#FFFFFF", "link": "#FFFFFF", "btn2_text": "#FFFFFF", "btn2_border": "#FFFFFF", "garage": "#FFFFFF",
                       "hs": 16, "hsm": 15, "icon_only": True})
     + [
@@ -648,7 +652,7 @@ results_schema = {
         {"type": "url", "id": "contact_url", "label": "Contact link"},
     ] + box({"box": "card", "box_bg": "#1F2A44", "box_text": "#FFFFFF"}) + grid()
     + block_settings({"pt": 0, "pb": 40, "hs": 28, "hsm": 22, "btn_bg": "#FFFFFF", "btn_text": "#1A1A1A", "labels": True,
-                      "label": "Update parts"}),
+                      "btn_label": "Update parts"}),
 }
 
 
