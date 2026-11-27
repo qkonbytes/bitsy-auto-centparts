@@ -37,7 +37,8 @@
 {%- unless s[hide_key] -%}
 {%- render 'bitsy-style', s: s, selector: '#bitsy-bar', extra: extra -%}
 <div id="bitsy-bar" class="{{ cls }}" data-bitsy-modal-host>
-  <div class="{{ bar_cls }}" data-bitsy-bar data-position="{{ s.position }}"{% if s.stuck_shadow %} data-stuck-shadow{% endif %}>
+  <div class="{{ bar_cls }}" data-bitsy-bar data-position="{{ s.position }}"{% if s.stuck_shadow %} data-stuck-shadow{% endif %}
+    {%- if template.name == 'collection' and collection.id %} data-collection-id="{{ collection.id }}" data-auto-collection="{{ s.auto_collection }}" data-theme-grid="{{ s.theme_grid | escape }}"{% endif %}>
     <div class="bitsy__inner">
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--b-gap,10px)">
         {%- if s.heading != blank -%}<span class="bitsy-bar__title{% unless s.heading_mobile %} bitsy--hide-mobile{% endunless %}">{{ s.heading }}</span>{%- endif -%}
@@ -59,6 +60,8 @@
 {"type":"text","id":"collapse_label","label":"Collapsed button text","default":"Select vehicle"},
 {"type":"range","id":"border_width","label":"Bottom border width","min":0,"max":4,"step":1,"default":0,"unit":"px"},
 {"type":"color","id":"border_color","label":"Bottom border colour","default":"#000000"},
+{"type":"checkbox","id":"auto_collection","label":"On collection pages, show only parts that fit the selected vehicle","default":true},
+{"type":"text","id":"theme_grid","label":"Theme parts to hide while filtering a collection","info":"CSS selectors, separated by commas: the theme's product grid, toolbar and pagination. Leave blank to find the grid automatically."},
 {"type":"checkbox","id":"hide_index","label":"Hide on home page","default":false},
 {"type":"checkbox","id":"hide_product","label":"Hide on product pages","default":false},
 {"type":"checkbox","id":"hide_collection","label":"Hide on collection pages","default":false},

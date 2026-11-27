@@ -378,7 +378,8 @@ bar_liquid = ROOT_LIQUID.replace("__EXTRA_CLASS__", "bitsy-embed") + """{%- liqu
 {%- unless s[hide_key] -%}
 {%- render 'bitsy-style', s: s, selector: '#bitsy-bar', extra: extra -%}
 <div id="bitsy-bar" class="{{ cls }}" data-bitsy-modal-host>
-  <div class="{{ bar_cls }}" data-bitsy-bar data-position="{{ s.position }}"{% if s.stuck_shadow %} data-stuck-shadow{% endif %}>
+  <div class="{{ bar_cls }}" data-bitsy-bar data-position="{{ s.position }}"{% if s.stuck_shadow %} data-stuck-shadow{% endif %}
+    {%- if template.name == 'collection' and collection.id %} data-collection-id="{{ collection.id }}" data-auto-collection="{{ s.auto_collection }}" data-theme-grid="{{ s.theme_grid | escape }}"{% endif %}>
     <div class="bitsy__inner">
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--b-gap,10px)">
         {%- if s.heading != blank -%}<span class="bitsy-bar__title{% unless s.heading_mobile %} bitsy--hide-mobile{% endunless %}">{{ s.heading }}</span>{%- endif -%}
@@ -405,6 +406,9 @@ bar_schema = {
         txt("collapse_label", "Collapsed button text", "Select vehicle"),
         rng("border_width", "Bottom border width", 0, 4, 1, 0),
         col("border_color", "Bottom border colour", "#000000"),
+        chk("auto_collection", "On collection pages, show only parts that fit the selected vehicle", True),
+        txt("theme_grid", "Theme parts to hide while filtering a collection", None,
+            "CSS selectors, separated by commas: the theme's product grid, toolbar and pagination. Leave blank to find the grid automatically."),
     ] + [chk("hide_" + k.replace("-", "_"), "Hide on " + l, False) for k, l in TEMPLATES]
     + block_settings({"pt": 8, "pb": 8, "ptm": 8, "pbm": 8, "bg": "#1F2A44", "heading": "#FFFFFF", "text": "#FFFFFF",
                       "label": "#FFFFFF", "link": "#FFFFFF", "btn2_text": "#FFFFFF", "btn2_border": "#FFFFFF", "garage": "#FFFFFF",

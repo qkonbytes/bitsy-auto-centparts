@@ -482,12 +482,19 @@
     this.out = $('[data-results-out]', root) || root;
     this.countEl = $('[data-results-count]', root);
   }
+  // Matched products are kept for this page view only, so re-selecting a vehicle costs no new request.
+  var partsMemo = {};
+  function partsFor(params) {
+    var key = params.ktype + '|' + (params.collection || '');
+    if (!partsMemo[key]) partsMemo[key] = api('/parts', params).catch(function (e) { delete partsMemo[key]; throw e; });
+    return partsMemo[key];
+  }
   Results.prototype.load = function (ktype) {
     var self = this, params = {ktype: ktype};
     if (this.mode === 'collection') params.collection = this.root.getAttribute('data-collection-id');
     this.ktype = ktype;
     this.out.innerHTML = '<div class="bitsy-loading" role="status">' + esc(this.root.getAttribute('data-t-loading') || 'Finding parts that fit…') + '</div>';
-    return api('/parts', params).then(function (res) {
+    return partsFor(params).then(function (res) {
       var ids = [], seen = {};
       (res.items || []).forEach(function (it) { if (it.variant_id && !seen[it.variant_id]) { seen[it.variant_id] = 1; ids.push(it.variant_id); } });
       self.total = res.count;
@@ -738,6 +745,59 @@
     if (active && auto) apply(active); else { stateEl.hidden = true; pickEl.hidden = false; }
   }
 
+  /* ---------- Collection pages filtered by the header nav bar ----------
+   * On /collections/<handle> the nav bar replaces the theme's product grid with every product in
+   * that collection that fits the selected vehicle. No section is needed in the theme. */
+  function themeGridTargets(selectorList) {
+    var found = [];
+    (selectorList || '').split(',').map(function (x) { return x.trim(); }).filter(Boolean).forEach(function (sel) {
+      try { $$(sel).forEach(function (el) { if (!el.closest('.bitsy') && found.indexOf(el) < 0) found.push(el); }); } catch (e) { /* bad selector */ }
+    });
+    // Keep only the outermost matches.
+    found = found.filter(function (el) { return !found.some(function (o) { return o !== el && o.contains(el); }); });
+    if (found.length) return found;
+    // Fallback: the smallest element holding all the theme's product links.
+    var scope = document.querySelector('main') || document.body;
+    var links = $$('a[href*="/products/"]', scope).filter(function (a) { return !a.closest('.bitsy, header, footer, nav'); });
+    if (links.length < 2) return [];
+    var lca = links[0].parentElement;
+    while (lca && !links.every(function (a) { return lca.contains(a); })) lca = lca.parentElement;
+    return lca && lca !== document.body && lca !== scope ? [lca] : [];
+  }
+  function initHeaderCollection(bar) {
+    var id = bar.getAttribute('data-collection-id');
+    if (!id || bar.getAttribute('data-auto-collection') === 'false') return;
+    if (!/\/collections\/[^/]+\/?$/.test(window.location.pathname)) return;
+    if (document.querySelector('[data-bitsy-results][data-mode="collection"]')) return; // the collection section is in charge
+    var targets = themeGridTargets(bar.getAttribute('data-theme-grid'));
+    if (!targets.length) return;
+    var t = bar.dataset;
+    var nameEl = h('span', {'data-coll-vehicle': ''});
+    var countEl = h('span', {class: 'bitsy-coll__count', 'data-results-count': ''});
+    var root = h('div', {class: 'bitsy__inner bitsy-results', 'data-bitsy-results': '', 'data-mode': 'collection', 'data-header': '',
+      'data-collection-id': id, 'data-t-count': t.tCount || '{count} products fit', 'data-pagination': 'numbers'}, [
+      h('div', {class: 'bitsy-coll__state'}, [
+        h('span', {class: 'bitsy-coll__fits', html: ICON_CHECK}, [nameEl]),
+        countEl,
+        h('span', {class: 'bitsy-spacer'}),
+        h('button', {type: 'button', class: 'bitsy-link', text: t.tClear || 'Clear vehicle, show all', onclick: function () { garage.clearActive(); }})
+      ]),
+      h('div', {'data-results-out': ''})
+    ]);
+    var wrap = h('div', {class: 'bitsy bitsy-auto-coll', hidden: true, style: 'margin:0 0 24px'}, [root]);
+    targets[0].parentNode.insertBefore(wrap, targets[0]);
+    var r = new Results(root);
+    var apply = function (v) {
+      targets.forEach(function (el) { el.style.display = v ? 'none' : ''; });
+      wrap.hidden = !v;
+      if (!v) { r.out.innerHTML = ''; return; }
+      nameEl.textContent = (t.tFits || 'Showing parts that fit {vehicle}').replace('{vehicle}', vehicleFull(v));
+      r.load(v.ktype);
+    };
+    document.addEventListener('bitsy:vehicle', function (e) { apply(e.detail); });
+    apply(garage.active());
+  }
+
   /* ---------- Garage count badges and nav bar behaviour ---------- */
   function refreshBadges() {
     var n = garage.list().length;
@@ -775,7 +835,8 @@
       b.__bitsy = true; b.addEventListener('click', function () { modal.open(b); });
     });
     $$('[data-bitsy-results][data-mode="page"]').forEach(initResultsPage);
-    $$('[data-bitsy-results][data-mode="collection"]').forEach(initCollection);
+    $$('[data-bitsy-results][data-mode="collection"]').forEach(function (r) { if (!r.hasAttribute('data-header') && !r.__bitsy) { r.__bitsy = true; initCollection(r); } });
+    $$('[data-bitsy-bar]').forEach(function (b) { if (!b.__bitsyColl) { b.__bitsyColl = true; initHeaderCollection(b); } });
     refreshBadges();
   }
   document.addEventListener('bitsy:garage', refreshBadges);
